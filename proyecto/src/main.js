@@ -7,6 +7,9 @@ import {mostrarLogout} from './componentes/logout.js';
 
 import { auth } from './firebaseConfig.js';
 import { onAuthStateChanged } from 'firebase/auth';
+
+console.log("MENU:", document.getElementById("menu"));
+
 onAuthStateChanged(auth, (user) => {
 if (user) {
 document.getElementById("menu").innerHTML = `

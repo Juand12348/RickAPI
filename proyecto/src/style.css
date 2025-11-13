@@ -1,96 +1,378 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* ===============================
+   🛸 HOME — Cards estilo Rick & Morty
+================================*/
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body{
+  background-color: #056826;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+/* Fondo general */
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    padding: 30px;
+    background: radial-gradient(circle at center, #32ff77, #0a3d0a, #001900);
+    background-size: 250% 250%;
+    animation: homePortalMove 7s infinite alternate;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
+@keyframes homePortalMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
 }
 
-.card {
-  padding: 2em;
+/* Tarjetas */
+.app-card {
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid #00ff9c;
+    border-radius: 18px;
+    box-shadow: 0 0 20px #00ff9c, 0 0 35px #10ffb3 inset;
+    overflow: hidden;
+    transition: 0.25s ease;
 }
 
-.read-the-docs {
-  color: #888;
+/* Hover */
+.app-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 0 30px #34ff6a, 0 0 45px #10ffb3 inset;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Imagen */
+.app-card img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-bottom: 3px solid #10ffb3;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Info */
+.app-info {
+    padding: 15px;
+    color: #c9ffe6;
+}
+
+.app-info h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #00ff9c;
+    text-shadow: 0 0 8px #00ff9c;
+    margin-bottom: 10px;
+}
+
+.app-info p {
+    margin: 6px 0;
+    font-size: 15px;
+}
+
+.app-info strong {
+    color: #34ff6a;
+    text-shadow: 0 0 5px #34ff6a;
+}
+/* Fondo tipo portal SOLO para el login */
+.login-portal {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #34ff6a, #0a3d0a, #001900);
+    background-size: 300% 300%;
+    animation: portalMove 6s infinite alternate;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/* Efecto portal animado */
+@keyframes portalMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* Caja del login estilo Rick & Morty */
+.login-container {
+    width: 350px;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid #00ff9c;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #00ff9c, 0 0 40px #10ffb3 inset;
+    backdrop-filter: blur(4px);
+    text-align: center;
+    animation: floating 3s ease-in-out infinite;
+}
+
+/* Flotar suave */
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+}
+
+.login-container h2 {
+    color: #00ff9c;
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ff9c;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background: #0b0b0b;
+    border: 2px solid #10ffb3;
+    border-radius: 12px;
+    color: #c3ffe8;
+    font-size: 16px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.login-container input:focus {
+    border-color: #34ff6a;
+    box-shadow: 0 0 15px #34ff6a;
+}
+
+.login-container button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    background: #34ff6a;
+    border: none;
+    color: #003b1c;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 0 20px #34ff6a;
+}
+
+.login-container button:hover {
+    transform: scale(1.05);
+    background: #00ff9c;
+    box-shadow: 0 0 30px #00ff9c;
+}
+
+/* Cuando el login esté activo, #app NO usa grid */
+#app.login-active {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+/* Fondo tipo portal para login y registro */
+.login-portal {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #34ff6a, #0a3d0a, #001900);
+    background-size: 300% 300%;
+    animation: portalMove 6s infinite alternate;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+@keyframes portalMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* Caja del login y registro */
+.login-container,
+.registro-container {
+    width: 350px;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid #00ff9c;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #00ff9c, 0 0 40px #10ffb3 inset;
+    backdrop-filter: blur(4px);
+    text-align: center;
+    animation: floating 3s ease-
+}
+/* ===============================
+   🎮 CONTENEDOR PRINCIPAL
+================================*/
+/* Contenedor del juego SIN afectar el home */
+.game-container-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 30px 0;
+}
+
+
+/* Caja del juego */
+.game-container {
+    width: 430px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid #00ff9c;
+    border-radius: 25px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 0 25px #00ff9c, 0 0 40px #10ffb3 inset;
+    backdrop-filter: blur(4px);
+    animation: floating 3s ease-in-out infinite;
+}
+
+/* Animación suave de flotar */
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Títulos */
+.game-container h2 {
+    color: #00ff9c;
+    font-size: 28px;
+    text-shadow: 0 0 10px #00ff9c;
+}
+
+#puntuacion {
+    font-size: 20px;
+    color: #b6ffe2;
+    margin-bottom: 10px;
+}
+
+#pregunta {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 15px 0;
+    color: #e1fff4;
+}
+
+/* Imagen del personaje */
+#imagen {
+    width: 250px !important;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin: 15px 0;
+    box-shadow: 0 0 20px #00ff9c;
+}
+
+/* ===============================
+   🟢 BOTONES DE OPCIONES
+================================*/
+#opciones {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#opciones button {
+    padding: 12px;
+    background: #0aff8c;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    color: #003b1c;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+    box-shadow: 0 0 12px #0aff8c;
+}
+
+#opciones button:hover {
+    background: #00ffb2;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00ffb2;
+}
+
+/* ===============================
+   🔵 BOTÓN NUEVO PERSONAJE
+================================*/
+#btnNuevo {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #34ff6a;
+    border: none;
+    color: #003b1c;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 0 25px #34ff6a;
+}
+
+#btnNuevo:hover {
+    transform: scale(1.07);
+    background: #00ff9c;
+    box-shadow: 0 0 35px #00ff9c;
+}
+/* ======== MENÚ ESTILO RICK & MORTY ======== */
+#menu {
+    width: 100%;
+    background: radial-gradient(circle at center, #34ff6a, #0a3d0a, #001900);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 3px solid #00ff9c;
+    box-shadow: 0 0 10px #00ff9c;
+}
+
+#menu nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#menu button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #001900;
+    background: #34ff6a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #34ff6a;
+    transition: 0.25s ease;
+}
+
+#menu button:hover {
+    background: #00ff9c;
+    box-shadow: 0 0 30px #00ff9c;
+    transform: scale(1.1);
+}
+
+#menu button:active {
+    transform: scale(0.95);
+}
+
+/* Modo móvil */
+@media (max-width: 600px) {
+    #menu nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #menu button {
+        width: 80%;
+    }
+}
+/* Contenedor centrado para login, registro y juego */
+#app.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 0 20px;
+}
+
+/* Home sigue usando grid */
+#app.grid-home {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    padding: 30px;
+    background: radial-gradient(circle at center, #32ff77, #0a3d0a, #001900);
+    background-size: 250% 250%;
+    animation: homePortalMove 7s infinite alternate;
 }

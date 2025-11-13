@@ -3,8 +3,10 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export function mostrarOriginal() {
     const app = document.getElementById("app");
+    app.classList.add("centered");  // <-- activa grid para home
+    app.classList.remove("grid-home");
     app.innerHTML = `
-        <div>
+        <div class="game-container">
             <h2>Juego: Adivina el personaje de Rick & Morty</h2>
             <p id="puntuacion">Cargando puntuación...</p>
             <p id="pregunta">Cargando personaje...</p>
