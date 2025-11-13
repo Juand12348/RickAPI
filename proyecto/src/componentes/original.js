@@ -1,121 +1,127 @@
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-// ------------------------------------------
-// FUNCIÓN PRINCIPAL
-// ------------------------------------------
 export function mostrarOriginal() {
-  const app = document.getElementById("app");
+    const app = document.getElementById("app");
+    app.innerHTML = `
+        <div>
+            <h2>Juego: Adivina el personaje de Rick & Morty</h2>
+            <p id="puntuacion">Cargando puntuación...</p>
+            <p id="pregunta">Cargando personaje...</p>
+            <img id="imagen" style="width:200px; border-radius:10px" />
 
-  app.innerHTML = `
-    <h1>Adivina el Personaje 🔍</h1>
-    <div id="game"></div>
-    <div id="mensaje"></div>
-    <button id="btnNuevaRonda">Nueva Ronda</button>
-  `;
+            <div id="opciones"></div>
 
-  document.getElementById("btnNuevaRonda").addEventListener("click", () => {
-    iniciarRonda();
-  });
+            <button id="btnNuevo">Nuevo personaje</button>
+        </div>
+    `;
 
-  iniciarRonda();
-}
+    let personajeCorrecto = null;
+    let puntos = 0;
 
-// ------------------------------------------
-// INICIAR RONDA
-// ------------------------------------------
-async function iniciarRonda() {
-  const mensaje = document.getElementById("mensaje");
-  mensaje.textContent = "";
+    // =====================================================
+    // 🟣 1. Cargar puntaje del usuario actual desde Firestore
+    // =====================================================
+    async function cargarPuntuacion() {
+        const user = auth.currentUser;
 
-  const personajeCorrecto = await obtenerPersonajeRandom();
-  const opciones = await obtenerOpciones(personajeCorrecto);
+        if (!user) {
+            document.getElementById("puntuacion").textContent = "Inicia sesión para guardar tu puntaje";
+            return;
+        }
 
-  mostrarUI(personajeCorrecto, opciones);
-}
+        const ref = doc(db, "puntajes", user.uid);
+        const snap = await getDoc(ref);
 
-// ------------------------------------------
-// OBTENER PERSONAJE RANDOM
-// ------------------------------------------
-async function obtenerPersonajeRandom() {
-  const randomId = Math.floor(Math.random() * 826) + 1;
-  const res = await fetch(`https://rickandmortyapi.com/api/character/${randomId}`);
-  return await res.json();
-}
+        if (snap.exists()) {
+            puntos = snap.data().puntos;
+        } else {
+            // Si no tiene puntaje aún se crea con 0
+            await setDoc(ref, { puntos: 0 });
+        }
 
-// ------------------------------------------
-// OBTENER 4 OPCIONES (1 correcta + 3 falsas)
-// ------------------------------------------
-async function obtenerOpciones(correcto) {
-  let opciones = [correcto];
-
-  while (opciones.length < 4) {
-    const idRandom = Math.floor(Math.random() * 826) + 1;
-    const res = await fetch(`https://rickandmortyapi.com/api/character/${idRandom}`);
-    const personaje = await res.json();
-
-    if (!opciones.some((p) => p.id === personaje.id)) {
-      opciones.push(personaje);
+        document.getElementById("puntuacion").textContent = `Puntuación: ${puntos}`;
     }
-  }
 
-  return opciones.sort(() => Math.random() - 0.5);
-}
+    cargarPuntuacion();
 
-// ------------------------------------------
-// UI DEL JUEGO + GUARDADO EN FIREBASE
-// ------------------------------------------
-function mostrarUI(personajeCorrecto, opciones) {
-  const gameDiv = document.getElementById("game");
-  const mensaje = document.getElementById("mensaje");
+    // =====================================================
+    // 🟢 2. Guardar el puntaje en Firestore
+    // =====================================================
+    async function guardarPuntuacion() {
+        const user = auth.currentUser;
+        if (!user) return;
 
-  gameDiv.innerHTML = `
-    <img src="${personajeCorrecto.image}" width="200" style="border-radius:10px; margin:10px">
-    <h3>Adivina quién es 👇</h3>
-    <div id="opciones"></div>
-  `;
+        const ref = doc(db, "puntajes", user.uid);
+        await setDoc(ref, { puntos });
+    }
 
-  const opcionesDiv = document.getElementById("opciones");
+    // =====================================================
+    // 🔵 3. Cargar un personaje aleatorio desde la API
+    // =====================================================
+    async function cargarPersonaje() {
+        document.getElementById("pregunta").textContent = "Cargando personaje...";
 
-  opciones.forEach((p) => {
-    const btn = document.createElement("button");
-    btn.textContent = p.name;
-    btn.style.display = "block";
-    btn.style.margin = "8px 0";
+        const num = Math.floor(Math.random() * 826) + 1;
+        const res = await fetch(`https://rickandmortyapi.com/api/character/${num}`);
+        personajeCorrecto = await res.json();
 
-    btn.addEventListener("click", async () => {
-      if (p.id === personajeCorrecto.id) {
-        mensaje.textContent = "¡Correcto! +10 puntos 🎉";
-        mensaje.style.color = "green";
-        await sumarPuntos(10);
-      } else {
-        mensaje.textContent = `Incorrecto 😢 Era: ${personajeCorrecto.name}`;
-        mensaje.style.color = "red";
-      }
-    });
+        document.getElementById("imagen").src = personajeCorrecto.image;
 
-    opcionesDiv.appendChild(btn);
-  });
-}
+        document.getElementById("pregunta").textContent = `¿Quién es este personaje?`;
 
-// ------------------------------------------
-// SUMAR PUNTOS EN FIREBASE
-// ------------------------------------------
-async function sumarPuntos(cantidad) {
-  const user = auth.currentUser;
+        generarOpciones();
+    }
 
-  if (!user) {
-    alert("Debes iniciar sesión para guardar tus puntos.");
-    return;
-  }
+    // =====================================================
+    // 🔶 4. Generar opciones falsas + la correcta
+    // =====================================================
+    async function generarOpciones() {
+        const opcionesDiv = document.getElementById("opciones");
+        opcionesDiv.innerHTML = "";
 
-  const ref = doc(db, "puntuaciones", user.uid);
-  const snap = await getDoc(ref);
+        let opciones = [personajeCorrecto.name];
 
-  if (!snap.exists()) {
-    await setDoc(ref, { puntos: cantidad });
-  } else {
-    const puntosActuales = snap.data().puntos || 0;
-    await setDoc(ref, { puntos: puntosActuales + cantidad });
-  }
+        while (opciones.length < 4) {
+            const num = Math.floor(Math.random() * 826) + 1;
+            const res = await fetch(`https://rickandmortyapi.com/api/character/${num}`);
+            const personaje = await res.json();
+
+            if (!opciones.includes(personaje.name)) {
+                opciones.push(personaje.name);
+            }
+        }
+
+        opciones = opciones.sort(() => Math.random() - 0.5);
+
+        opciones.forEach((opcion) => {
+            const btn = document.createElement("button");
+            btn.textContent = opcion;
+
+            btn.addEventListener("click", () => validarRespuesta(opcion));
+
+            opcionesDiv.appendChild(btn);
+        });
+    }
+
+    // =====================================================
+    // 🟠 5. Validar respuesta y actualizar puntuación
+    // =====================================================
+    async function validarRespuesta(opcion) {
+        if (opcion === personajeCorrecto.name) {
+            alert("¡Correcto! +1 punto");
+            puntos++;
+            await guardarPuntuacion();
+        } else {
+            alert("Incorrecto 😢");
+        }
+
+        document.getElementById("puntuacion").textContent = `Puntuación: ${puntos}`;
+        cargarPersonaje();
+    }
+
+    // Botón para un nuevo personaje
+    document.getElementById("btnNuevo").addEventListener("click", cargarPersonaje);
+
+    cargarPersonaje();
 }
