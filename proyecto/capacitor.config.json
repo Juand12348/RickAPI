@@ -1,1 +1,13 @@
-{ "appId": "com.rickapi.app", "appName": "rickapi", "webDir": "dist", "plugins": { "SplashScreen": { "launchShowDuration": 3000, "launchAutoHide": true, "androidScaleType": "CENTER_CROP", "splashFullScreen": true, "splashImmersive": true } } }
+{ "appId": "com.rickapi.app", 
+    "appName": "rickapi", 
+    "webDir": "dist", 
+    "plugins": 
+        { "SplashScreen": 
+            { "launchShowDuration": 3000, 
+                "launchAutoHide": true, 
+                "androidScaleType": "CENTER_CROP", 
+                "splashFullScreen": true, 
+                "splashImmersive": true 
+            } 
+        } 
+}
